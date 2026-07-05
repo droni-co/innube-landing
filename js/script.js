@@ -204,23 +204,67 @@ function initCarousel() {
     (_, i) => `<button class="carousel-dot${i === 0 ? " active" : ""}" data-index="${i}" aria-label="Ir a diapositiva ${i + 1}"></button>`
   ).join("");
 
-  let index = 0;
   const total = SERVICES.length;
+  if (total > 1) {
+    const firstClone = track.firstElementChild.cloneNode(true);
+    const lastClone = track.lastElementChild.cloneNode(true);
+    track.insertBefore(lastClone, track.firstElementChild);
+    track.appendChild(firstClone);
+    track.style.transition = "none";
+    track.style.transform = "translateX(-100%)";
+    requestAnimationFrame(() => {
+      track.style.transition = "";
+    });
+  }
+
+  let index = 0;
+  let position = total > 1 ? 1 : 0;
   const dots = dotsWrap.querySelectorAll(".carousel-dot");
 
-  function goTo(i) {
-    index = (i + total) % total;
-    track.style.transform = `translateX(-${index * 100}%)`;
+  function updateDots() {
     dots.forEach((d, di) => d.classList.toggle("active", di === index));
   }
 
-  prevBtn?.addEventListener("click", () => goTo(index - 1));
-  nextBtn?.addEventListener("click", () => goTo(index + 1));
+  function moveTo(newPosition, animate = true) {
+    if (total <= 1) return;
+    position = newPosition;
+    track.style.transition = animate ? "" : "none";
+    track.style.transform = `translateX(-${position * 100}%)`;
+  }
+
+  function step(direction) {
+    if (total <= 1) return;
+    index = (index + direction + total) % total;
+    moveTo(position + direction);
+    updateDots();
+  }
+
+  function goTo(i) {
+    index = (i + total) % total;
+    if (total <= 1) {
+      updateDots();
+      return;
+    }
+    moveTo(index + 1);
+    updateDots();
+  }
+
+  track.addEventListener("transitionend", () => {
+    if (total <= 1) return;
+    if (position === 0) {
+      moveTo(total, false);
+    } else if (position === total + 1) {
+      moveTo(1, false);
+    }
+  });
+
+  prevBtn?.addEventListener("click", () => step(-1));
+  nextBtn?.addEventListener("click", () => step(1));
   dots.forEach((d) => d.addEventListener("click", () => goTo(Number(d.dataset.index))));
 
-  let autoplay = setInterval(() => goTo(index + 1), 5000);
+  let autoplay = setInterval(() => step(1), 5000);
   function pause() { clearInterval(autoplay); }
-  function resume() { autoplay = setInterval(() => goTo(index + 1), 5000); }
+  function resume() { autoplay = setInterval(() => step(1), 5000); }
   carouselEl?.addEventListener("mouseenter", pause);
   carouselEl?.addEventListener("mouseleave", resume);
   carouselEl?.addEventListener("touchstart", pause, { passive: true });
@@ -228,8 +272,8 @@ function initCarousel() {
 
   carouselEl?.setAttribute("tabindex", "0");
   carouselEl?.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowLeft") goTo(index - 1);
-    if (e.key === "ArrowRight") goTo(index + 1);
+    if (e.key === "ArrowLeft") step(-1);
+    if (e.key === "ArrowRight") step(1);
   });
 
   // basic swipe support
@@ -238,7 +282,7 @@ function initCarousel() {
   track.addEventListener("touchend", (e) => {
     if (startX === null) return;
     const diff = e.changedTouches[0].clientX - startX;
-    if (Math.abs(diff) > 40) goTo(index + (diff < 0 ? 1 : -1));
+    if (Math.abs(diff) > 40) step(diff < 0 ? 1 : -1);
     startX = null;
   });
 }
