@@ -1,0 +1,13 @@
+services:
+  innube:
+    build: .
+    restart: unless-stopped
+    environment:
+      VIRTUAL_HOST: innube.droni.vip
+      LETSENCRYPT_HOST: innube.droni.vip
+    networks:
+      - nginx-proxy
+
+networks:
+  nginx-proxy:
+    external: true

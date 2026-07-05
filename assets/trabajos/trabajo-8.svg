@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1e3a5f"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#g)"/>
+  <g fill="#ffffff" opacity="0.9">
+    <rect x="150" y="110" width="100" height="70" rx="8" fill="none" stroke="#ffffff" stroke-width="4"/>
+    <circle cx="200" cy="140" r="12" fill="none" stroke="#ffffff" stroke-width="4"/>
+    <path d="M150 165 L180 140 L210 160 L230 135 L250 165 Z" fill="#ffffff" opacity="0.85"/>
+  </g>
+  <text x="200" y="215" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="middle">Papeleria - Carpetas institucionales</text>
+  <text x="200" y="238" font-family="Arial, sans-serif" font-size="12" fill="#ffffffcc" text-anchor="middle">Foto proximamente</text>
+</svg>
