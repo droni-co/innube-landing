@@ -181,6 +181,47 @@ header {
   100% { background-position: 0% 50%; }
 }
 
+/* Hero video background */
+.hero-video-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-video-bg iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* Maintain 16:9 and always cover the container */
+  width: 100vw;
+  height: 56.25vw; /* 16:9 of viewport width */
+  min-height: 100%;
+  min-width: 177.78vh; /* 16:9 of viewport height */
+  transform: translate(-50%, -50%);
+  border: none;
+}
+
+/* Dark overlay for text legibility over the video */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(4, 8, 26, 0.70) 0%,
+    rgba(4, 8, 26, 0.55) 55%,
+    rgba(0, 100, 110, 0.50) 100%
+  );
+  z-index: 0;
+}
+
+/* On small mobile, skip the video for performance – gradient fallback shows */
+@media (max-width: 480px) {
+  .hero-video-bg { display: none; }
+  .hero-overlay { display: none; }
+}
+
 .hero-inner {
   position: relative;
   z-index: 1;
